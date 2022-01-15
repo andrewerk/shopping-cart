@@ -1,6 +1,18 @@
 // const { fetchProducts } = require("./helpers/fetchProducts");
 
+// const getSavedCartItems = require("./helpers/getSavedCartItems");
+
+// const saveCartItems = require("./helpers/saveCartItems");
+
 // const { fetchItem } = require("./helpers/fetchItem");
+
+const cart = document.querySelector('.cart__items');
+
+function retrieveCart() {
+  if (getSavedCartItems()) {
+  cart.innerHTML = getSavedCartItems();
+}
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -34,6 +46,7 @@ function createProductItemElement({ sku, name, image }) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  saveCartItems(cart.outerHTML);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -56,8 +69,8 @@ async function inserInCart(event) {
   const id = event.target.previousSibling.previousSibling.previousSibling.innerText;
   const item = await fetchItem(id);
   const { id: sku, title: name, price: salePrice } = item;
-  const cart = document.querySelector('.cart__items');
   cart.appendChild(createCartItemElement({ sku, name, salePrice }));  
+  saveCartItems(cart.innerHTML);
 }
 
 const items = document.querySelector('.items');
@@ -65,4 +78,5 @@ items.addEventListener('click', inserInCart);
 
 window.onload = () => {
   init();
+  retrieveCart();
  };
